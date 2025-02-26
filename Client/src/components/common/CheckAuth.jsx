@@ -1,44 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
 export default function CheckAuth({ isAuthenticated, user, children }) {
   const location = useLocation();
+  const [redirect, setRedirect] = useState(null);
 
-  if (
-    !isAuthenticated &&
-    !(
-      location.pathname.includes("/login") ||
-      location.pathname.includes("/register")
-    )
-  ) {
-    return <Navigate to={"/auth/login"} />;
-  }
-
-  if (
-    (isAuthenticated && location.pathname.includes("/login")) ||
-    location.pathname.includes("/register")
-  ) {
-    if (user?.role === "admin") {
-      return <Navigate to={"/admin/dashboard"} />;
-    } else {
-      return <Navigate to={"/shopping/home"} />;
+  useEffect(() => {
+    if (!isAuthenticated) {
+      if (
+        !location.pathname.includes("/login") &&
+        !location.pathname.includes("/register")
+      ) {
+        setRedirect("/auth/login");
+      }
+    } else if (isAuthenticated) {
+      if (
+        location.pathname.includes("/login") ||
+        location.pathname.includes("/register")
+      ) {
+        if (user?.role === "admin") {
+          setRedirect("/admin/dashboard");
+        } else {
+          setRedirect("/shopping/home");
+        }
+      } else if (
+        user?.role !== "admin" &&
+        location.pathname.includes("admin")
+      ) {
+        setRedirect("/unauth-page");
+      } else if (user?.role === "admin" && location.pathname.includes("shop")) {
+        setRedirect("/admin/dashboard");
+      }
     }
-  }
+  }, [isAuthenticated, user, location.pathname]);
 
-  if (
-    isAuthenticated &&
-    user?.role !== "admin" &&
-    location.pathname.includes("admin")
-  ) {
-    return <Navigate to={"/unauth-page"} />;
-  }
-
-  if (
-    isAuthenticated &&
-    user?.role === "admin" &&
-    location.pathname.includes("shop")
-  ) {
-    return <Navigate to={"/admin/dashboard"} />;
+  if (redirect) {
+    return <Navigate to={redirect} />;
   }
 
   return <>{children}</>;
