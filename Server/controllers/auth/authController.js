@@ -93,3 +93,34 @@ export async function loginUser(req, res) {
     });
   }
 }
+
+// Logout
+
+export function logoutUser(req, res) {
+  res.clearCookie("token").json({
+    success: "true",
+    message: "Logged out Successfully!",
+  });
+}
+
+// Auth MiddleWare
+
+export async function authMiddleware(req, res, next) {
+  const token = req.cookies.token;
+  if (!token)
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized User!",
+    });
+
+  try {
+    const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: "Unauthorized User!",
+    });
+  }
+}

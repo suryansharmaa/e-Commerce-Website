@@ -15,10 +15,16 @@ import ShoppingListing from "./pages/shopping-view/Listing";
 import ShoppingAccount from "./pages/shopping-view/Account";
 import ShoppingLayout from "./components/shopping-view/Layout";
 import ShoppingCheckout from "./pages/shopping-view/Checkout";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { checkAuth } from "./store/auth-slice";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
