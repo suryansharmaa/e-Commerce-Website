@@ -2,8 +2,9 @@ import React from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { Select } from "../ui/select";
+import { Select, SelectItem, SelectValue, SelectTrigger } from "../ui/select";
 import { Textarea } from "../ui/textarea";
+import { SelectContent } from "../ui/select";
 
 export default function CommonForm({
   formControls,
@@ -20,7 +21,7 @@ export default function CommonForm({
         element = (
           <Input
             name={getControlItem.name}
-            placeholder={getControlItem.placeholder}
+            placeholder={getControlItem.label}
             id={getControlItem.name}
             type={getControlItem.type}
             value={value}
