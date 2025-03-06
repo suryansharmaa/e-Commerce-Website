@@ -12,6 +12,7 @@ export default function ProducImageUpload({
   imageLoadingState,
   setUploadedImageUrl,
   setImageLoadingState,
+  isEditMode,
 }) {
   const inputRef = useRef(null);
 
@@ -73,6 +74,7 @@ export default function ProducImageUpload({
           className="hidden"
           ref={inputRef}
           onChange={handleImageFileChange}
+          disable={isEditMode}
         />
         {!imageFile ? (
           <Label
