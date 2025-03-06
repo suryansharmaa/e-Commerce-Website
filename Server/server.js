@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import authRouter from "./routes/auth/authRoute.js";
+import adminProductRouter from "./routes/admin/products-routes.js";
 
 // Connecting to the Database
 
@@ -39,5 +40,6 @@ app.use(
 app.use(cookieParser());
 app.use(json());
 app.use("/api/auth", authRouter);
+app.use("/api/admin/products", adminProductRouter);
 
 app.listen(PORT, () => console.log(`Server is now running at port ${PORT}`));

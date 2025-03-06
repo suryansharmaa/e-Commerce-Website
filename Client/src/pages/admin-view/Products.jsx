@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import CommonForm from "@/components/common/Form";
 import {
   Sheet,
@@ -6,8 +6,11 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { toast } from "sonner";
 import { addProductFormElements } from "@/config";
 import ProducImageUpload from "@/components/admin-view/Image-Upload";
+import { useDispatch } from "react-redux";
+import { addNewProduct, fetchAllProducts } from "@/store/admin/products-slice";
 
 const intialFormData = {
   image: null,
@@ -26,8 +29,34 @@ export default function AdminProducts() {
   const [formData, setFormData] = useState(intialFormData);
   const [imageFile, setImageFile] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+  const [imageLoadingState, setImageLoadingState] = useState(false);
+  const { productList } = useSelectotr((state) => state.adminProducts);
+  const dispatch = useDispatch();
 
-  function onSubmit() {}
+  function onSubmit(event) {
+    event.preventDefault();
+    dispatch(
+      addNewProduct({
+        ...formData,
+        image: uploadedImageUrl,
+      })
+    ).then((data) => {
+      console.log(data);
+      if (data?.payload?.success) {
+        dispatch(fetchAllProducts());
+        setopenCreateProductsDialog(false);
+        setImageFile(null);
+        setFormData(intialFormData);
+        toast: "Product added successfully";
+      }
+    });
+  }
+
+  useEffect(() => {
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
+
+  console.log(productList, "productList");
 
   return (
     <Fragment>
@@ -48,6 +77,8 @@ export default function AdminProducts() {
             setImageFile={setImageFile}
             uploadedImageUrl={uploadedImageUrl}
             setUploadedImageUrl={setUploadedImageUrl}
+            imageLoadingState={imageLoadingState}
+            setImageLoadingState={setImageLoadingState}
           />
           <div className="py-6">
             <CommonForm
