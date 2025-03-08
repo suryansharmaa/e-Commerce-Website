@@ -70,9 +70,10 @@ export async function loginUser(req, res) {
         id: checkUser._id,
         role: checkUser.role,
         email: checkUser.email,
+        userName: checkUser.userName,
       },
       process.env.CLIENT_SECRET_KEY || "CLIENT_SECRET_KEY",
-      { expiresIn: "3000mins" }
+      { expiresIn: "60m" }
     );
 
     res.cookie("token", token, { httpOnly: true, secure: false }).json({
@@ -82,6 +83,7 @@ export async function loginUser(req, res) {
         email: checkUser.email,
         role: checkUser.role,
         id: checkUser._id,
+        userName: checkUser.userName,
       },
     });
   } catch (e) {
